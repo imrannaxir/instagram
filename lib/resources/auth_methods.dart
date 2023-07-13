@@ -40,8 +40,8 @@ class AuthMethods {
         );
         print(credential.user!.uid);
 
-        String photoUrl =
-            await StorageMethods().uploadImage('profilePics', file, false);
+        String photoUrl = await StorageMethods()
+            .uploadImageToStorage('profilePics', file, false);
 
         // Add user to our databse
 
@@ -111,5 +111,9 @@ class AuthMethods {
       result = error.toString();
     }
     return result;
+  }
+
+  Future<void> signOut() async {
+    await _auth.signOut();
   }
 }
