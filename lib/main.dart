@@ -80,3 +80,10 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+/*
+
+  For Warning error
+  git config core.autocrlf true
+
+ */

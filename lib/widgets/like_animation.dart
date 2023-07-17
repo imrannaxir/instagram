@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 class LikeAnimation extends StatefulWidget {
   final Widget child;
-  final bool isAnimation;
+  final bool isAnimating;
   final Duration duration;
   final VoidCallback? onEnd;
   final bool smallLike;
   const LikeAnimation({
     super.key,
     required this.child,
-    required this.isAnimation,
+    required this.isAnimating,
     this.duration = const Duration(microseconds: 150),
     this.onEnd,
     this.smallLike = false,
@@ -42,13 +42,13 @@ class _LikeAnimationState extends State<LikeAnimation>
   @override
   void didUpdateWidget(covariant LikeAnimation oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.isAnimation != oldWidget.isAnimation) {
+    if (widget.isAnimating != oldWidget.isAnimating) {
       startAnimation();
     }
   }
 
   startAnimation() async {
-    if (widget.isAnimation || widget.smallLike) {
+    if (widget.isAnimating || widget.smallLike) {
       await controller.forward();
       await controller.reverse();
       await Future.delayed(
@@ -60,6 +60,7 @@ class _LikeAnimationState extends State<LikeAnimation>
       }
     }
   }
+
   @override
   void dispose() {
     super.dispose();

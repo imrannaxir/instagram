@@ -175,13 +175,13 @@ class _AddPostScreenState extends State<AddPostScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const CircleAvatar(
-                      backgroundImage: AssetImage(
-                        'assets/images/naxir.jpg',
-                      ),
-                      // backgroundImage: NetworkImage(
-                      //   user.photoUrl,
+                    CircleAvatar(
+                      // backgroundImage: AssetImage(
+                      //   'assets/images/naxir.jpg',
                       // ),
+                      backgroundImage: NetworkImage(
+                        user.photoUrl,
+                      ),
                     ),
                     SizedBox(
                       width: MediaQuery.sizeOf(context).width * 0.45,

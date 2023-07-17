@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram/models/user.dart' as model;
 import 'package:instagram/providers/user_provider.dart';
 import 'package:instagram/resources/firestore_methods.dart';
 import 'package:instagram/screens/comments_screen.dart';
 import 'package:instagram/utils/colors.dart';
+import 'package:instagram/utils/utils.dart';
 import 'package:instagram/widgets/like_animation.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -21,11 +23,33 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
 /*
- 
+
 */
   bool isLikeAnimation = false;
+  int commentLen = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    getComments();
+  }
+
+  void getComments() async {
+    try {
+      QuerySnapshot snap = await FirebaseFirestore.instance
+          .collection('posts')
+          .doc(widget.snap['postId'])
+          .collection('comments')
+          .get();
+      commentLen = snap.docs.length;
+    } catch (error) {
+      showSnackBar(error.toString(), context);
+    }
+    setState(() {});
+  }
+
 /*
- 
+
 */
   @override
   Widget build(BuildContext context) {
@@ -45,11 +69,11 @@ class _PostCardState extends State<PostCard> {
             ).copyWith(right: 0),
             child: Row(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 16,
-                  backgroundImage: AssetImage(
-                    'assets/images/imran.jpg',
-                    // snap['profImage'],
+                  backgroundImage: NetworkImage(
+                    // 'assets/images/imran.jpg',
+                    widget.snap['profImage'].toString(),
                   ),
                 ),
                 Expanded(
@@ -83,7 +107,12 @@ class _PostCardState extends State<PostCard> {
                             ]
                                 .map(
                                   (e) => InkWell(
-                                    onTap: () {},
+                                    onTap: () async {
+                                      FirestoreMethods().deletePost(
+                                        widget.snap['postId'],
+                                      );
+                                      Navigator.of(context).pop();
+                                    },
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 16,
@@ -123,8 +152,8 @@ class _PostCardState extends State<PostCard> {
                   height: MediaQuery.sizeOf(context).height * 0.35,
                   width: double.infinity,
                   child: Image.network(
-                    'assets/images/macbook.jpg',
-                    // snap['postUrl'],
+                    // 'assets/images/macbook.jpg',
+                    widget.snap['postUrl'].toString(),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -132,7 +161,7 @@ class _PostCardState extends State<PostCard> {
                   duration: const Duration(milliseconds: 200),
                   opacity: isLikeAnimation ? 1 : 0,
                   child: LikeAnimation(
-                    isAnimation: isLikeAnimation,
+                    isAnimating: isLikeAnimation,
                     duration: const Duration(milliseconds: 400),
                     onEnd: () {
                       setState(() {
@@ -153,7 +182,7 @@ class _PostCardState extends State<PostCard> {
           Row(
             children: [
               LikeAnimation(
-                isAnimation: widget.snap['likes'].contains(user.uid),
+                isAnimating: widget.snap['likes'].contains(user.uid),
                 smallLike: true,
                 child: IconButton(
                   onPressed: () async {
@@ -248,9 +277,9 @@ class _PostCardState extends State<PostCard> {
                   onTap: () {},
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: const Text(
-                      'View all 1037 comments',
-                      style: TextStyle(
+                    child: Text(
+                      'View all $commentLen comments',
+                      style: const TextStyle(
                         fontSize: 16,
                         color: secondaryColor,
                       ),

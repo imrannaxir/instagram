@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:instagram/models/user.dart';
 import 'package:instagram/providers/user_provider.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CommentCard extends StatefulWidget {
-  const CommentCard({super.key});
+  final snap;
+  const CommentCard({super.key, required this.snap});
 
   @override
   State<CommentCard> createState() => _CommentCardState();
@@ -21,10 +23,10 @@ class _CommentCardState extends State<CommentCard> {
       ),
       child: Row(
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 18,
             backgroundImage: NetworkImage(
-              'https://images.unsplash.com/photo-1681276159290-29989388a728?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwyNnx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
+              widget.snap['profilePic'],
             ),
           ),
           Expanded(
@@ -35,29 +37,31 @@ class _CommentCardState extends State<CommentCard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   RichText(
-                    text: const TextSpan(
+                    text: TextSpan(
                       children: [
                         TextSpan(
-                          text: 'username',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                          text: widget.snap['name'],
+                          style: const TextStyle(
+                            // color: Colors.white,
+                            // fontWeight: FontWeight.bold,
                           ),
                         ),
                         TextSpan(
-                          text: ' Some description to insert',
-                          style: TextStyle(
-                            color: Colors.white54,
-                          ),
+                          text: ' ${widget.snap['text']}',
+                          // style: const TextStyle(
+                          //   color: Colors.white54,
+                          // ),
                         ),
                       ],
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 4),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
                     child: Text(
-                      '20/7/23',
-                      style: TextStyle(
+                      DateFormat.yMMMd().format(
+                        widget.snap['datePublished'].toDate(),
+                      ),
+                      style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
                       ),
